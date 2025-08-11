@@ -2,7 +2,8 @@ PROJECT_NAME := aiexpert
 IMAGE_NAME := seunguk/${PROJECT_NAME}
 SHM_SIZE := 64gb
 DIR ?=./user0
-GPU_ID=0
+GPU_ID ?= 0
+PORT ?= 9000
 
 build:
 	docker build \
@@ -23,8 +24,16 @@ run:
 		--workdir="/app" \
 		--gpus "device=${GPU_ID}" \
 		--volume="${DIR}:/app" \
+		--volume="./data:/ata" \
+		-e LD_LIBRARY_PATH=/usr/local/cuda/lib64 \
+		-e WARPCONVNET_FWD_ALGO_MODE="[explicit_gemm,implicit_gemm]" \
+		-e WARPCONVNET_BWD_ALGO_MODE="[explicit_gemm,implicit_gemm]" \
 		-p ${PORT}:8888 \
 		${IMAGE_NAME}:latest
+
+download-data:
+	wget "https://cvg-data.inf.ethz.ch/openscene/data/scannet_processed/scannet_3d.zip" -O ./data/scannet_3d.zip
+	unzip ./data/scannet_3d.zip -d ./data
 
 run-user0:
 	$(MAKE) run DIR=user0 GPU_ID=0 PORT=9000

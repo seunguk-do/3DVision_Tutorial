@@ -19,6 +19,7 @@ RUN groupadd --gid $GID $USER \
 # Install required apt packages and clear cache afterwards.
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
+    wget \
     git \
     build-essential \
     libgl1-mesa-glx \
@@ -34,18 +35,22 @@ RUN apt-get update && \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
+WORKDIR /data
 RUN chown -R $UID:$GID /app
+RUN chown -R $UID:$GID /data
 
 USER $USER
 
 RUN pip install torch==2.5.1 torchvision==0.20.1 torchaudio==2.5.1 --index-url https://download.pytorch.org/whl/cu121
-RUN pip install jupyter build ninja git+https://github.com/rusty1s/pytorch_scatter.git
+RUN pip install build ninja
+RUN pip install torch-scatter -f https://data.pyg.org/whl/torch-2.5.1+cu121.html
 RUN pip install flash-attn --no-build-isolation
 RUN pip install --no-cache-dir \
     "jaxtyping>=0.2"        \
     "torchinfo>=1.8"        \
     "warp-lang>=1.2"        \
     "webdataset>=0.2"       \
+    jupyter                 \
     pre-commit              \
     black                   \
     isort                   \
@@ -73,6 +78,11 @@ RUN git submodule update --init 3rdparty/cutlass
 # RUN python setup.py build_ext --inplace
 RUN python -m build --wheel --no-isolation && \
     pip install dist/*.whl
+
+# # download Dataset
+# ENV SCANNET_URL = "https://cvg-data.inf.ethz.ch/openscene/data/scannet_processed/scannet_3d.zip"
+# RUN wget ${SCANNET_URL} -O /data/scannet_3d.zip
+# RUN unzip /data/scannet_3d.zip -d /data
 
 WORKDIR /app
 
