@@ -24,7 +24,7 @@ run:
 		--workdir="/app" \
 		--gpus "device=${GPU_ID}" \
 		--volume="${DIR}:/app" \
-		--volume="./data:/ata" \
+		--volume="./data:/data" \
 		-e LD_LIBRARY_PATH=/usr/local/cuda/lib64 \
 		-e WARPCONVNET_FWD_ALGO_MODE="[explicit_gemm,implicit_gemm]" \
 		-e WARPCONVNET_BWD_ALGO_MODE="[explicit_gemm,implicit_gemm]" \
