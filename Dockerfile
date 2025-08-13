@@ -33,7 +33,9 @@ RUN pip install --no-cache-dir \
     omegaconf               \
     lightning               \
     torchmetrics            \
-    cupy-cuda12x
+    cupy-cuda12x            \
+    matplotlib              \
+    plotly
 
 # Install torch_scatter from github source
 # ENV TORCH_CUDA_ARCH_LIST="8.0 8.6 8.9 9.0 9.1 9.2"
@@ -48,6 +50,7 @@ RUN mkdir -p /opt/warpconvnet && cd /opt/warpconvnet && \
     python -m build --wheel --no-isolation && \
     pip install dist/*.whl
 
+RUN pip install flash-attn --no-build-isolation
 RUN pip install jupyter
 
 # # Add a non-root user with a fixed UID and GID

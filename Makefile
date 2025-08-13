@@ -4,14 +4,9 @@ SHM_SIZE := 64gb
 DIR ?=./user0
 GPU_ID ?= 0
 PORT ?= 9000
+USER_ID ?= 0
 
-# build:
-# 	docker build \
-# 		--tag ${IMAGE_NAME}:latest \
-# 		--build-arg USER=$$(whoami) \
-# 		--build-arg UID=$$(id -u) \
-# 		--build-arg GID=$$(id -g) \
-# 		-f Dockerfile .
+all: build run-user0 run-user1 run-user2 run-user3 run-user4 run-user5 run-user6 run-user7
 
 build:
 	docker build \
@@ -36,6 +31,21 @@ run:
 download-data:
 	wget "https://cvg-data.inf.ethz.ch/openscene/data/scannet_processed/scannet_3d.zip" -O ./data/scannet_3d.zip
 	unzip ./data/scannet_3d.zip -d ./data
+
+copy_materials_single:
+	mkdir ./user${USER_ID}
+	cp materials/3DPerception.ipynb ./user${USER_ID}
+	cp materials/*.py ./user${USER_ID}
+
+copy-materials:
+	$(MAKE) copy_materials_single USER_ID=0
+	$(MAKE) copy_materials_single USER_ID=1
+	$(MAKE) copy_materials_single USER_ID=2
+	$(MAKE) copy_materials_single USER_ID=3
+	$(MAKE) copy_materials_single USER_ID=4
+	$(MAKE) copy_materials_single USER_ID=5
+	$(MAKE) copy_materials_single USER_ID=6
+	$(MAKE) copy_materials_single USER_ID=7
 
 run-user0:
 	$(MAKE) run DIR=user0 GPU_ID=0 PORT=9000
