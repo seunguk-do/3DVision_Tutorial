@@ -5,12 +5,17 @@ DIR ?=./user0
 GPU_ID ?= 0
 PORT ?= 9000
 
+# build:
+# 	docker build \
+# 		--tag ${IMAGE_NAME}:latest \
+# 		--build-arg USER=$$(whoami) \
+# 		--build-arg UID=$$(id -u) \
+# 		--build-arg GID=$$(id -g) \
+# 		-f Dockerfile .
+
 build:
 	docker build \
 		--tag ${IMAGE_NAME}:latest \
-		--build-arg USER=$$(whoami) \
-		--build-arg UID=$$(id -u) \
-		--build-arg GID=$$(id -g) \
 		-f Dockerfile .
 
 run:
@@ -24,10 +29,7 @@ run:
 		--workdir="/app" \
 		--gpus "device=${GPU_ID}" \
 		--volume="${DIR}:/app" \
-		--volume="./data:/ata" \
-		-e LD_LIBRARY_PATH=/usr/local/cuda/lib64 \
-		-e WARPCONVNET_FWD_ALGO_MODE="[explicit_gemm,implicit_gemm]" \
-		-e WARPCONVNET_BWD_ALGO_MODE="[explicit_gemm,implicit_gemm]" \
+		--volume="./data:/data" \
 		-p ${PORT}:8888 \
 		${IMAGE_NAME}:latest
 
