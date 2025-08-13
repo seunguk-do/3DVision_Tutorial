@@ -14,16 +14,16 @@ build:
 		-f Dockerfile .
 
 run:
-	@if [ ! -d ${DIR} ]; then \
-		mkdir ${DIR}; \
+	@if [ ! -d ./${DIR} ]; then \
+		mkdir ./${DIR}; \
 	fi
 	docker run \
-		-it \
+		-itd \
 		--rm \
 		--shm-size 64gb \
 		--workdir="/app" \
 		--gpus "device=${GPU_ID}" \
-		--volume="${DIR}:/app" \
+		--volume="./${DIR}:/app" \
 		--volume="./data:/data" \
 		-p ${PORT}:8888 \
 		${IMAGE_NAME}:latest
