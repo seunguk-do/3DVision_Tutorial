@@ -14,9 +14,6 @@ build:
 		-f Dockerfile .
 
 run:
-	@if [ ! -d ./${DIR} ]; then \
-		mkdir ./${DIR}; \
-	fi
 	docker run \
 		-itd \
 		--rm \
@@ -26,6 +23,7 @@ run:
 		--volume="./${DIR}:/app" \
 		--volume="./data:/data" \
 		-p ${PORT}:8888 \
+		--name aiexpert_${DIR} \
 		${IMAGE_NAME}:latest
 
 download-data:
@@ -33,7 +31,7 @@ download-data:
 	unzip ./data/scannet_3d.zip -d ./data
 
 copy_materials_single:
-	mkdir ./user${USER_ID}
+	# mkdir ./user${USER_ID}
 	cp materials/3DPerception.ipynb ./user${USER_ID}
 	cp materials/*.py ./user${USER_ID}
 

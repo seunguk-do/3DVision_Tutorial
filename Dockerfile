@@ -1,4 +1,4 @@
-FROM pytorch/pytorch:2.7.1-cuda12.8-cudnn9-devel
+FROM pytorch/pytorch:2.5.1-cuda12.1-cudnn9-devel
 
 # Install dependencies
 RUN apt-get update && apt-get install -y \
@@ -40,7 +40,7 @@ RUN pip install --no-cache-dir \
 # Install torch_scatter from github source
 # ENV TORCH_CUDA_ARCH_LIST="8.0 8.6 8.9 9.0 9.1 9.2"
 # RUN pip install --no-cache-dir git+https://github.com/rusty1s/pytorch_scatter.git
-RUN pip install torch-scatter -f https://data.pyg.org/whl/torch-2.7.0+cu128.html
+RUN pip install torch-scatter -f https://data.pyg.org/whl/torch-2.5.1+cu121.html
 
 # Install warpconvnet and install only the 3rdparty/cutlass submodule
 RUN mkdir -p /opt/warpconvnet && cd /opt/warpconvnet && \
