@@ -4,6 +4,7 @@ SHM_SIZE := 64gb
 DIR ?=./user0
 GPU_ID ?= 0
 PORT ?= 9000
+NERFSTUDIO_PORT ?= 10000
 USER_ID ?= 0
 
 all: build run-user0 run-user1 run-user2 run-user3 run-user4 run-user5 run-user6 run-user7
@@ -11,9 +12,15 @@ all: build run-user0 run-user1 run-user2 run-user3 run-user4 run-user5 run-user6
 build:
 	docker build \
 		--tag ${IMAGE_NAME}:latest \
+		--build-arg USER=$$(whoami) \
+		--build-arg UID=$$(id -u) \
+		--build-arg GID=$$(id -g) \
 		-f Dockerfile .
 
 run:
+	if [ ! -d "${DIR}" ]; then \
+		mkdir ${DIR}; \
+	fi
 	docker run \
 		-itd \
 		--rm \
@@ -23,6 +30,8 @@ run:
 		--volume="./${DIR}:/app" \
 		--volume="./data:/data" \
 		-p ${PORT}:8888 \
+		-p ${NERFSTUDIO_PORT}:${NERFSTUDIO_PORT} \
+		-e NERFSTUDIO_PORT=${NERFSTUDIO_PORT} \
 		--name aiexpert_${DIR} \
 		${IMAGE_NAME}:latest
 
@@ -46,28 +55,28 @@ copy-materials:
 	$(MAKE) copy_materials_single USER_ID=7
 
 run-user0:
-	$(MAKE) run DIR=user0 GPU_ID=0 PORT=9000
+	$(MAKE) run DIR=user0 GPU_ID=0 PORT=9000 NERFSTUDIO_PORT=10000
 
 run-user1:
-	$(MAKE) run DIR=user1 GPU_ID=1 PORT=9001
+	$(MAKE) run DIR=user1 GPU_ID=1 PORT=9001 NERFSTUDIO_PORT=10001
 
 run-user2:
-	$(MAKE) run DIR=user2 GPU_ID=2 PORT=9002
+	$(MAKE) run DIR=user2 GPU_ID=2 PORT=9002 NERFSTUDIO_PORT=10002
 
 run-user3:
-	$(MAKE) run DIR=user3 GPU_ID=3 PORT=9003
+	$(MAKE) run DIR=user3 GPU_ID=3 PORT=9003 NERFSTUDIO_PORT=10003
 
 run-user4:
-	$(MAKE) run DIR=user4 GPU_ID=4 PORT=9004
+	$(MAKE) run DIR=user4 GPU_ID=4 PORT=9004 NERFSTUDIO_PORT=10004
 
 run-user5:
-	$(MAKE) run DIR=user5 GPU_ID=5 PORT=9005
+	$(MAKE) run DIR=user5 GPU_ID=5 PORT=9005 NERFSTUDIO_PORT=10005
 
 run-user6:
-	$(MAKE) run DIR=user6 GPU_ID=6 PORT=9006
+	$(MAKE) run DIR=user6 GPU_ID=6 PORT=9006 NERFSTUDIO_PORT=10006
 
 run-user7:
-	$(MAKE) run DIR=user7 GPU_ID=7 PORT=9007
+	$(MAKE) run DIR=user7 GPU_ID=7 PORT=9007 NERFSTUDIO_PORT=10007
 
 
 .PHONY: run build
